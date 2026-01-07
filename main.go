@@ -31,10 +31,19 @@ func main() {
 	publicURLsStr := os.Getenv("PUBLIC_URLS")
 	if publicURLsStr != "" {
 		urls := strings.Split(publicURLsStr, ",")
-		for _, u := range urls {
+		// Weighted logic: Add first URL 4 times, others 1 time
+		for i, u := range urls {
 			trimmed := strings.TrimSpace(u)
 			if trimmed != "" {
-				webServerURLs = append(webServerURLs, trimmed)
+				if i == 0 {
+					// First URL gets 4 slots
+					for k := 0; k < 4; k++ {
+						webServerURLs = append(webServerURLs, trimmed)
+					}
+				} else {
+					// Others get 1 slot
+					webServerURLs = append(webServerURLs, trimmed)
+				}
 			}
 		}
 	}
@@ -44,7 +53,7 @@ func main() {
 		webServerURLs = append(webServerURLs, defaultPublicURL)
 	}
 
-	// Set primary webServerURL for backward compatibility
+	// Set primary webServerURL for backward compatibility (points to first URL)
 	webServerURL = webServerURLs[0]
 
 	// Parse allowed origins
