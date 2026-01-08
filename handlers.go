@@ -125,7 +125,11 @@ func m3u8ProxyHandler(w http.ResponseWriter, r *http.Request) {
 						if strings.HasSuffix(strings.ToLower(resolvedKeyURL), ".m3u8") {
 							currentBaseURL = webServerURLs[0]
 						} else {
-							currentBaseURL = webServerURLs[segmentCount%len(webServerURLs)]
+							if len(webServerURLs) >= 3 {
+								currentBaseURL = webServerURLs[[]int{1, 2, 0, 0}[segmentCount%4]]
+							} else {
+								currentBaseURL = webServerURLs[segmentCount%len(webServerURLs)]
+							}
 							segmentCount++
 						}
 
@@ -152,7 +156,12 @@ func m3u8ProxyHandler(w http.ResponseWriter, r *http.Request) {
 					encodedHeaders)
 			} else {
 				// For all other files (segments, keys, etc.), use round-robin ts-proxy
-				currentBaseURL := webServerURLs[segmentCount%len(webServerURLs)]
+				var currentBaseURL string
+				if len(webServerURLs) >= 3 {
+					currentBaseURL = webServerURLs[[]int{1, 2, 0, 0}[segmentCount%4]]
+				} else {
+					currentBaseURL = webServerURLs[segmentCount%len(webServerURLs)]
+				}
 				segmentCount++
 
 				newURL = fmt.Sprintf("%s/ts-proxy?url=%s&headers=%s",
@@ -445,7 +454,11 @@ func videostrProxyHandler(w http.ResponseWriter, r *http.Request) {
 							if strings.HasSuffix(strings.ToLower(resolvedKeyURL), ".m3u8") {
 								currentBaseURL = webServerURLs[0]
 							} else {
-								currentBaseURL = webServerURLs[segmentCount%len(webServerURLs)]
+								if len(webServerURLs) >= 3 {
+									currentBaseURL = webServerURLs[[]int{1, 2, 0, 0}[segmentCount%4]]
+								} else {
+									currentBaseURL = webServerURLs[segmentCount%len(webServerURLs)]
+								}
 								segmentCount++
 							}
 
@@ -464,7 +477,12 @@ func videostrProxyHandler(w http.ResponseWriter, r *http.Request) {
 					newLines = append(newLines, webServerURLs[0]+"/"+proxyPath)
 				} else {
 					// Use round-robin for segments
-					currentBaseURL := webServerURLs[segmentCount%len(webServerURLs)]
+					var currentBaseURL string
+					if len(webServerURLs) >= 3 {
+						currentBaseURL = webServerURLs[[]int{1, 2, 0, 0}[segmentCount%4]]
+					} else {
+						currentBaseURL = webServerURLs[segmentCount%len(webServerURLs)]
+					}
 					segmentCount++
 					newLines = append(newLines, currentBaseURL+"/"+proxyPath)
 				}
