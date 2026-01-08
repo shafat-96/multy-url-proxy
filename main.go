@@ -36,8 +36,8 @@ func main() {
 			trimmed := strings.TrimSpace(u)
 			if trimmed != "" {
 				if i == 0 {
-					// First URL gets 4 slots
-					for k := 0; k < 4; k++ {
+					// First URL gets 3 slots
+					for k := 0; k < 3; k++ {
 						webServerURLs = append(webServerURLs, trimmed)
 					}
 				} else {
